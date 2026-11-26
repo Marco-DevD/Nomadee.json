@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  channel      Channel?
+}
+
+model Channel {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  streamKey   String   @unique @default(uuid())
+  title       String   @default("Bem-vindo à minha live no Nomade!")
+  category    String   @default("Conversa")
+  isLive      Boolean  @default(false)
+  playbackUrl String?
+  updatedAt   DateTime @updatedAt
+}
